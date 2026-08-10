@@ -1,0 +1,12 @@
+{
+  "schema": "glaciereq.repo-capabilities.v1",
+  "repository": "GlacierEQ/crusoe-rack-to-token-autopilot",
+  "capabilities": [
+    {
+      "id": "rack-to-token-autopilot",
+      "name": "Rack-to-Token Autopilot",
+      "status": "SCAFFOLD",
+      "module": "src/rack_to_token_autopilot.py"
+    }
+  ]
+}

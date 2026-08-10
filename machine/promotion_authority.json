@@ -1,0 +1,11 @@
+{
+  "schema": "glaciereq.promotion-authority-grant.v1",
+  "repository": "GlacierEQ/crusoe-rack-to-token-autopilot",
+  "source_sha": "603d629438aead66a92024228449742129e62a6457a039fa2c35042f35b85b2f",
+  "proof_receipt_digest": "9eae1ca3a252b7dbd0ba74dd548aebbd64d82184b79ad632fae5d3eefee6fcc1",
+  "not_after": 1788948650.8200698,
+  "mac": "2d8cc6fa1ed7b2d583036be948908bce1a4da4474aa53d877453bfe139b49dd6",
+  "issuer": "local_operator_promotion_authority",
+  "verified": true,
+  "secret_ref": "src/promotion_authority.py::LOCAL_OPERATOR_SECRET"
+}
