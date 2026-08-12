@@ -1,0 +1,60 @@
+{
+  "schema": "glaciereq.crystallization-completion-receipt.v1",
+  "repository": "GlacierEQ/crusoe-rack-to-token-autopilot",
+  "status": "CRYSTALLIZED",
+  "verified_source_head": "c5cd1aeab8c326d40a1c1d54a36e3a5fc7a0483b",
+  "canonical_purpose": "Convert rack telemetry into bounded useful-token allocation decisions under explicit thermal, coolant, power, network, health, and reserve-capacity envelopes.",
+  "capabilities": {
+    "material_count": 10,
+    "implemented_count": 10,
+    "verified_count": 10,
+    "remaining_gap_count": 0
+  },
+  "proof": {
+    "crystallization": {
+      "workflow_run_id": 31642017346,
+      "job_id": 94266599387,
+      "conclusion": "success",
+      "proved": [
+        "installable wheel build",
+        "complete behavioral and failure-path tests",
+        "installed rack-to-token CLI execution",
+        "direct canonical operability execution",
+        "all capabilities WORKING",
+        "empty gap matrix",
+        "truth-surface enforcement"
+      ]
+    },
+    "prometheus_integration": {
+      "workflow_run_id": 31642017395,
+      "conclusion": "success",
+      "proved": "bounded Prometheus parsing plus real local HTTP scrape-to-allocation path"
+    },
+    "stateful_control_loop": {
+      "workflow_run_id": 31642017600,
+      "conclusion": "success",
+      "proved": "hysteresis, cooldown, emergency override, allocation materiality, and persisted loop state"
+    },
+    "repository_tests": {
+      "workflow_run_id": 31642017392,
+      "conclusion": "success"
+    }
+  },
+  "build": "PASS",
+  "tests": "PASS",
+  "runtime": "PASS",
+  "deployment": {
+    "status": "NOT_APPLICABLE",
+    "reason": "The repository is a local/reference infrastructure-control tool. Production deployment would require environment-specific workload and physical-control authority outside the repository's independent purpose."
+  },
+  "canonical_mechanism": "src/rack_token_controller.py",
+  "compatibility_surface": "src/rack_to_token_autopilot.py",
+  "operability_entry": "scripts/operate.py",
+  "truth_boundary": [
+    "No Crusoe affiliation or endorsement is established.",
+    "No proprietary infrastructure or telemetry access is established.",
+    "No production deployment or physical-control authority is established.",
+    "No production fleet safety, customer benefit, scale, latency, or reliability claim is established."
+  ],
+  "receipt_head_rule": "This receipt may merge only if the commit carrying it passes the same repository verification matrix without material regression."
+}
