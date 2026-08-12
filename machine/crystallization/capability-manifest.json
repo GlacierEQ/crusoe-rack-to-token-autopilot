@@ -1,0 +1,15 @@
+{
+  "schema": "glaciereq.crystallization-capabilities.v3",
+  "capabilities": [
+    {"id":"rack_constrained_plan_optimizer","state":"WORKING","implementation_paths":["src/rack_to_token_autopilot.py"],"verification":["tests/test_rack_to_token_autopilot.py","tests/test_adversarial.py"]},
+    {"id":"rack_telemetry_contract","state":"WORKING","implementation_paths":["src/rack_token_controller.py"],"verification":["tests/test_rack_token_controller.py"]},
+    {"id":"operating_envelope_controller","state":"WORKING","implementation_paths":["src/rack_token_controller.py"],"verification":["tests/test_rack_token_controller.py"]},
+    {"id":"safe_token_capacity_estimation","state":"WORKING","implementation_paths":["src/rack_token_controller.py"],"verification":["tests/test_rack_token_controller.py"]},
+    {"id":"fleet_token_allocator","state":"WORKING","implementation_paths":["src/rack_token_controller.py"],"verification":["tests/test_rack_token_controller.py"]},
+    {"id":"stateful_autopilot_loop","state":"WORKING","implementation_paths":["src/autopilot_loop.py"],"verification":["tests/test_autopilot_loop.py"]},
+    {"id":"prometheus_telemetry_adapter","state":"WORKING","implementation_paths":["src/prometheus_adapter.py","src/prometheus_rack_cli.py"],"verification":["tests/test_prometheus_adapter.py",".github/workflows/prometheus-integration.yml"]},
+    {"id":"installed_cli_suite","state":"WORKING","implementation_paths":["pyproject.toml","src/rack_to_token_cli.py","src/rack_token_cli.py","src/prometheus_rack_cli.py"],"verification":[".github/workflows/tests.yml",".github/workflows/crystallization.yml"]},
+    {"id":"combined_direct_operability","state":"WORKING","implementation_paths":["scripts/operate.py"],"verification":[".github/workflows/crystallization.yml"]},
+    {"id":"truthful_primary_documentation","state":"WORKING","implementation_paths":["README.md","machine/capabilities.json"],"verification":[".github/workflows/crystallization.yml"]}
+  ]
+}

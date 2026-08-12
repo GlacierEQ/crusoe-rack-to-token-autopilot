@@ -1,26 +1,15 @@
 {
-  "schema": "glaciereq.operability-receipt.v1",
+  "schema": "glaciereq.operability-receipt.v2",
   "repository": "GlacierEQ/crusoe-rack-to-token-autopilot",
-  "at": "2026-08-10T10:10Z",
-  "source_sha": "603d629438aead66a92024228449742129e62a6457a039fa2c35042f35b85b2f",
-  "entry": "scripts/operate.py",
-  "primary_output": {
-    "module": "rack_to_token_autopilot",
-    "ok": true,
-    "repository": "GlacierEQ/crusoe-rack-to-token-autopilot",
-    "smoke": {
-      "args": [
-        "RackToTokenAutopilotRequest(subject_id='"
-      ],
-      "content_checked": true,
-      "invoked": true,
-      "kind": "class",
-      "method": "evaluate",
-      "module_local": true,
-      "name": "Mechanism",
-      "result": "RackToTokenAutopilotReceipt(decision=<Decision.ALLOW: 'ALLOW'>, reasons=('scaffold_allow',), digest='de5a200a89430d2dec7318cf5aea51ee466c45d752e842d6d852e6bed15c045c', metrics={'scaffold': True, 'payload_keys': [], 'budget': 1.0})"
-    }
+  "status": "HISTORICAL_RECEIPT_SUPERSEDED",
+  "historical": {
+    "at": "2026-08-10T10:10Z",
+    "result": "PASS",
+    "mechanism": "scaffold compatibility stub",
+    "current_authority": false
   },
-  "dual_run_ok": true,
-  "result": "PASS"
+  "current_operability_entry": "scripts/operate.py",
+  "current_mechanism": "rack_token_controller.RackToTokenAutopilot.allocate_fleet",
+  "current_receipt_state": "PENDING_EXACT_HEAD_WORKFLOW",
+  "rule": "The historical scaffold PASS does not establish current mechanism operability. Current authority is earned only by exact-head execution of the real controller."
 }

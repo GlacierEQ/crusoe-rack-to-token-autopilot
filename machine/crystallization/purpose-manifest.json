@@ -1,0 +1,9 @@
+{
+  "schema": "glaciereq.crystallization-purpose.v2",
+  "repository": "GlacierEQ/crusoe-rack-to-token-autopilot",
+  "canonical_purpose": "Optimize inference against hard rack/workload constraints and allocate useful-token demand across safe observed rack capacity.",
+  "consumers": ["inference operators", "local simulators", "rack/workload control integrations"],
+  "natural_runtime": "installable local Python library and CLI suite",
+  "naturally_deployable": false,
+  "deployment_reason": "Local/reference control software is complete without asserting authority over a real rack. Production attachment requires a separately authorized environment integration."
+}

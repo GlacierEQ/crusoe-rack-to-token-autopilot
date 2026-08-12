@@ -1,0 +1,41 @@
+name: Crystallization
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  rack-to-token-behavior:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build installable wheel
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip wheel . --no-deps -w dist
+          python -m pip install --force-reinstall dist/*.whl pytest
+      - name: Prove complete behavior and failure paths
+        run: python -m pytest -q
+      - name: Execute installed plan optimizer
+        run: rack-to-token-autopilot > /tmp/plan.json
+      - name: Execute installed fleet allocator
+        run: rack-to-token examples/rack_fleet.json --output /tmp/fleet.json
+      - name: Execute canonical combined operability path
+        run: python scripts/operate.py > /tmp/operate.json
+      - name: Enforce crystallization manifests and truth surface
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          caps = json.loads(Path('machine/crystallization/capability-manifest.json').read_text())
+          gaps = json.loads(Path('machine/crystallization/gap-matrix.json').read_text())
+          assert caps['capabilities']
+          assert all(item['state'] == 'WORKING' for item in caps['capabilities'])
+          assert gaps['gaps'] == []
+          text = Path('README.md').read_text()
+          assert 'Plan optimizer' in text
+          assert 'Telemetry allocator' in text
+          PY

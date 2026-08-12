@@ -1,66 +1,71 @@
 # Rack-to-Token Autopilot
 
-Independent GlacierEQ portfolio implementation aligned to **Crusoe** operating themes.
+Independent GlacierEQ rack-aware inference control software. It now preserves **two complementary mechanisms** instead of forcing one implementation to erase the other:
 
-> **Not affiliated.** This repository is not affiliated with, endorsed by, employed by, or deployed at Crusoe. No proprietary access, production deployment, customer impact, or company partnership is claimed.
+1. **Plan optimizer** — selects a measured inference plan that satisfies GPU, rack-power, thermal, network, throughput, p95-latency, and success-rate contracts while maximizing successful tokens per rack-kW.
+2. **Telemetry allocator** — converts per-rack telemetry into safe useful-token capacity, allocates a fleet token target only from eligible capacity, and runs a stateful confirmation/cooldown/emergency loop with optional bounded Prometheus ingestion.
 
-## Purpose
+> **Not affiliated.** This repository is not affiliated with, endorsed by, employed by, or deployed at Crusoe. No proprietary access, production deployment, customer impact, company partnership, physical-control authority, or production-scale reliability claim is made.
 
-Optimize inference at the **rack constraint boundary**, not at an isolated model benchmark. Candidate execution plans are evaluated against GPU capacity, rack power, thermals, network capacity, throughput, p95 latency, and successful-request rate.
+## Why both belong here
 
-The selected plan maximizes **successful tokens per rack-kW** while satisfying every hard infrastructure and workload SLO. A faster plan that overheats the rack, overruns network capacity, misses latency, or burns too much power is rejected instead of being celebrated by a vanity benchmark.
+Canonical main independently evolved the original API into a strong rack-constrained **candidate-plan optimizer**. The crystallization branch independently built the next depth step main's own documentation identified: a telemetry-bound rack allocator, state loop, and Prometheus adapter. They solve adjacent layers of the same purpose and do not need to cannibalize each other.
 
-## Implemented mechanism
+### Plan optimizer
 
-`RackToTokenAutopilot` accepts:
+`src/rack_to_token_autopilot.py` accepts:
 
 - rack envelope: GPU count, power limit, thermal ceiling, network capacity;
 - workload contract: minimum tokens/s, maximum p95 latency, minimum success rate;
-- measured candidate plans: placement/batch configuration plus power, thermal, network, throughput, latency, and success observations.
+- measured candidate plans with placement/batch plus power, thermal, network, throughput, latency, and success observations.
 
-For every candidate it emits explicit refusal reasons such as:
+Unsafe candidates receive explicit refusal reasons. Eligible candidates rank deterministically by successful tokens/kW, then latency, power, and stable plan id.
 
-- `gpu_capacity_exceeded`
-- `power_limit_exceeded`
-- `thermal_limit_exceeded`
-- `network_capacity_exceeded`
-- `throughput_slo_missed`
-- `latency_slo_missed`
-- `success_rate_slo_missed`
+### Telemetry allocator
 
-Eligible plans are ranked deterministically by successful tokens/kW, then latency, power, and stable plan id. The receipt includes the selected plan, rejected-plan reasons, headroom metrics, and a SHA-256 decision digest.
+`src/rack_token_controller.py` consumes per-rack GPU readiness/utilization, temperature/coolant, power, network, error rate, queue depth, and observed token throughput. It:
 
-## Run
+- emits HOLD / SCALE_UP / SCALE_DOWN / DRAIN / THERMAL_THROTTLE / POWER_THROTTLE / NETWORK_THROTTLE decisions;
+- derives safe useful-token capacity from observed headroom and reserve policy;
+- refuses a fleet target when safe aggregate capacity cannot satisfy it;
+- ranks eligible rack capacity by observed token efficiency;
+- produces deterministic allocation receipts.
 
-```bash
-python -m pytest -q
-python scripts/operate.py
-```
+`src/autopilot_loop.py` adds confirmation hysteresis, cooldown, emergency override, allocation materiality, and deterministic state persistence. `src/prometheus_adapter.py` and `src/prometheus_rack_cli.py` add a bounded open-Prometheus ingestion path with completeness and ambiguity checks.
 
-Build and install the CLI:
+## Install and run
 
 ```bash
-python -m pip install build
-python -m build
-python -m pip install dist/*.whl
+python -m pip install .
+
+# Stable plan-selection API/CLI
 rack-to-token-autopilot
+rack-to-token-autopilot --input rack-observations.json
+
+# Telemetry-driven fleet allocation
+rack-to-token examples/rack_fleet.json
+rack-to-token-fleet examples/rack_fleet.json
+
+# Bounded Prometheus source
+rack-to-token-prometheus http://127.0.0.1:9090/metrics --target-tokens-per-second 12000
 ```
 
-Provide your own JSON payload:
+Direct combined operability probe:
 
 ```bash
-rack-to-token-autopilot --input rack-observations.json
+python scripts/operate.py
 ```
 
 ## Proof surface
 
-- `src/rack_to_token_autopilot.py` — constrained optimizer
-- `src/rack_to_token_cli.py` — installable execution surface
-- `tests/test_rack_to_token_autopilot.py` — rack/SLO/thermal/power/network/tie-break behavior
+- `tests/test_rack_to_token_autopilot.py` — plan-selection, SLO, thermal/power/network, duplicate, tie-break, and digest behavior
+- `tests/test_rack_token_controller.py` — telemetry decisions and fleet allocation/refusal
+- `tests/test_autopilot_loop.py` — stateful confirmation/cooldown/emergency/persistence behavior
+- `tests/test_prometheus_adapter.py` — parser and ingestion boundary
 - `tests/test_adversarial.py` — fail-closed adversarial surface
-- `.github/workflows/tests.yml` — tests + cold-start + wheel build/install + installed CLI execution
-- `machine/` — existing Helix target, proof, authority, and promotion surfaces remain preserved
+- `.github/workflows/` — build/install, installed CLIs, direct runtime, state-loop, and Prometheus proof
+- `machine/crystallization/` — explicit purpose, capabilities, gaps, execution plan, and source-bound completion receipts
 
-## Current boundary
+## Completion boundary
 
-This operates on supplied or measured observations; it does not control real Crusoe infrastructure and does not claim production measurements. The next infrastructure depth step is an adapter that ingests telemetry from a disposable GPU/rack simulator or permitted test cluster and closes the loop across repeated observations.
+The repository is complete as an **independent local/reference rack-inference control system** when both mechanisms build, install, execute, and pass their behavior/failure proofs with no material local-purpose gaps. Production attachment to a real rack or workload authority is a separate environment-specific integration and cannot be inferred from local completion.

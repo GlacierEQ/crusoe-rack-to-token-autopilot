@@ -1,0 +1,9 @@
+{
+  "schema": "glaciereq.crystallization-completion-receipt.v1",
+  "repository": "GlacierEQ/crusoe-rack-to-token-autopilot",
+  "status": "SUPERSEDED_PENDING_CANONICAL_RECONCILIATION",
+  "previous_verified_source_head": "c5cd1aeab8c326d40a1c1d54a36e3a5fc7a0483b",
+  "previous_receipt_head": "56731a1419e24e1ff84d98a65cc574076777f5f2",
+  "reason": "Canonical main independently added a complementary rack-constrained plan optimizer after the prior merge base. That useful mechanism is being preserved and integrated with the telemetry allocator rather than overwritten. A new terminal receipt is required after the reconciled head passes the full matrix.",
+  "previous_proof_runs": [31642017346,31642017395,31642017600,31642017392,31642495436,31642495443,31642495409,31642495438]
+}
