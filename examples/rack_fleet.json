@@ -1,0 +1,63 @@
+{
+  "target_tokens_per_second": 1700.0,
+  "envelope": {
+    "max_gpu_temp_c": 82.0,
+    "max_coolant_delta_c": 14.0,
+    "max_power_utilization": 0.94,
+    "max_network_utilization": 0.92,
+    "max_error_rate": 0.02,
+    "min_ready_gpu_ratio": 0.90,
+    "min_power_headroom_kw": 5.0,
+    "target_gpu_utilization_low": 0.68,
+    "target_gpu_utilization_high": 0.90,
+    "min_token_efficiency_per_kw": 1.0,
+    "reserve_capacity_ratio": 0.08
+  },
+  "racks": [
+    {
+      "rack_id": "rack-efficient",
+      "gpu_count": 8,
+      "ready_gpus": 8,
+      "gpu_utilization": 0.72,
+      "max_gpu_temp_c": 68.0,
+      "coolant_supply_c": 21.0,
+      "coolant_return_c": 29.0,
+      "rack_power_kw": 55.0,
+      "rack_power_limit_kw": 100.0,
+      "network_utilization": 0.45,
+      "error_rate": 0.0,
+      "tokens_per_second": 1100.0,
+      "queue_depth": 4
+    },
+    {
+      "rack_id": "rack-safe",
+      "gpu_count": 8,
+      "ready_gpus": 8,
+      "gpu_utilization": 0.78,
+      "max_gpu_temp_c": 72.0,
+      "coolant_supply_c": 21.0,
+      "coolant_return_c": 31.0,
+      "rack_power_kw": 74.0,
+      "rack_power_limit_kw": 100.0,
+      "network_utilization": 0.54,
+      "error_rate": 0.002,
+      "tokens_per_second": 900.0,
+      "queue_depth": 2
+    },
+    {
+      "rack_id": "rack-hot",
+      "gpu_count": 8,
+      "ready_gpus": 8,
+      "gpu_utilization": 0.91,
+      "max_gpu_temp_c": 87.0,
+      "coolant_supply_c": 22.0,
+      "coolant_return_c": 38.0,
+      "rack_power_kw": 88.0,
+      "rack_power_limit_kw": 100.0,
+      "network_utilization": 0.50,
+      "error_rate": 0.001,
+      "tokens_per_second": 1250.0,
+      "queue_depth": 8
+    }
+  ]
+}
