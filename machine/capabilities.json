@@ -1,12 +1,20 @@
 {
-  "schema": "glaciereq.repo-capabilities.v1",
+  "schema": "glaciereq.repo-capabilities.v2",
   "repository": "GlacierEQ/crusoe-rack-to-token-autopilot",
+  "status": "FUNCTIONAL_CRYSTALLIZATION_CANDIDATE",
   "capabilities": [
-    {
-      "id": "rack-to-token-autopilot",
-      "name": "Rack-to-Token Autopilot",
-      "status": "SCAFFOLD",
-      "module": "src/rack_to_token_autopilot.py"
-    }
-  ]
+    "validated rack telemetry contract",
+    "thermal/power/network/health operating-envelope decisions",
+    "safe useful-token capacity estimation",
+    "fleet useful-token allocation with explicit refusal",
+    "stateful hysteresis/cooldown/emergency control loop",
+    "deterministic state and decision receipts",
+    "JSON fleet CLI",
+    "bounded Prometheus HTTP telemetry adapter",
+    "installable console scripts",
+    "legacy API compatibility facade over the real controller"
+  ],
+  "canonical_module": "src/rack_token_controller.py",
+  "compatibility_module": "src/rack_to_token_autopilot.py",
+  "terminal_status_requires": "exact-head crystallization CI plus source-bound completion receipt"
 }

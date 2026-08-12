@@ -1,16 +1,15 @@
 {
   "naturally_deployable": false,
+  "deployment_reason": "Local/reference infrastructure-control tool; production deployment would require environment-specific physical/workload authority not implied by repository purpose.",
   "test_commands": [
-    ["python", "-m", "pytest", "-q", "tests/test_rack_token_controller.py", "tests/test_autopilot_loop.py", "tests/test_prometheus_adapter.py"]
+    ["python", "-m", "pytest", "-q", "tests/test_rack_token_controller.py", "tests/test_autopilot_loop.py", "tests/test_prometheus_adapter.py", "tests/test_rack_to_token_autopilot.py"]
   ],
   "build_commands": [
-    ["python", "-m", "py_compile", "src/rack_token_controller.py", "src/autopilot_loop.py", "src/rack_token_cli.py", "src/prometheus_adapter.py", "src/prometheus_rack_cli.py"]
+    ["python", "-m", "pip", "wheel", ".", "--no-deps", "-w", "dist"]
   ],
   "runtime_commands": [
-    ["python", "-m", "rack_token_cli", "examples/rack_fleet.json"]
+    ["python", "scripts/operate.py"],
+    ["rack-to-token", "examples/rack_fleet.json"]
   ],
-  "environment": {
-    "PYTHONPATH": "src"
-  },
-  "truth_boundary": "The repository is an independent infrastructure-control reference. No proprietary Crusoe integration or production deployment is claimed."
+  "truth_boundary": "Independent local/reference rack control system. No proprietary Crusoe integration, production deployment, physical-control authority, or production performance claim."
 }

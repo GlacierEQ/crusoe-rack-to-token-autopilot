@@ -1,21 +1,27 @@
-"""Rack-to-Token Autopilot — SCAFFOLD STUB.
+"""Compatibility facade over the real Rack-to-Token controller.
 
-Company lens: Crusoe (independent; no affiliation).
-Bottleneck: co-optimizing rack-to-model performance as inference becomes a major workload and energy/network constraints shape economics
-
-IMPLEMENTATION: see DEV_UP_INSTRUCTIONS.md
+The historical repository exposed ``RackToTokenAutopilot.evaluate(request)``.
+That API is preserved, but it now executes the real fleet allocator instead of
+a scaffold allow/refuse stub.
 """
 from __future__ import annotations
 
 import hashlib
 import json
-from dataclasses import asdict, dataclass, field
+from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any
 
+from rack_token_controller import (
+    FleetDecision,
+    OperatingEnvelope,
+    RackTelemetry,
+    RackToTokenAutopilot as FleetController,
+)
 
-def _digest(obj: object) -> str:
-    payload = json.dumps(obj, sort_keys=True, separators=(",", ":"), default=str)
+
+def _digest(value: object) -> str:
+    payload = json.dumps(value, sort_keys=True, separators=(",", ":"), allow_nan=False)
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
@@ -26,12 +32,9 @@ class Decision(str, Enum):
 
 @dataclass(frozen=True)
 class RackToTokenAutopilotRequest:
-    """Input envelope — expand fields as the mechanism solidifies."""
-
     subject_id: str
     payload: dict[str, Any] = field(default_factory=dict)
     budget: float = 1.0
-    # Authority / freshness placeholders for the filling AI:
     grant_id: str | None = None
     not_after: float | None = None
 
@@ -53,60 +56,63 @@ class RackToTokenAutopilotReceipt:
 
 
 class RackToTokenAutopilot:
-    """Central mechanism stub.
+    """Backward-compatible request facade for the canonical fleet controller.
 
-    Contract the filling AI must preserve:
-    - `evaluate(req)` returns a RackToTokenAutopilotReceipt
-    - invalid/empty subject_id → REFUSE
-    - budget <= 0 → REFUSE
-    - otherwise ALLOW with a content digest over the request
-    Replace body with the real algorithm; keep fail-closed edges.
+    ``payload`` must contain ``racks`` and ``target_tokens_per_second`` and may
+    contain an ``envelope`` object. ``budget`` remains a compatibility admission
+    field only; physical capacity is always derived from telemetry/envelopes.
     """
-
-    # Named constants (no magic numbers)
-    MIN_BUDGET: float = 0.0
-    MAX_REASON_LEN: int = 240
 
     def evaluate(self, req: RackToTokenAutopilotRequest) -> RackToTokenAutopilotReceipt:
         reasons: list[str] = []
-        if not req.subject_id or not str(req.subject_id).strip():
+        if not isinstance(req.subject_id, str) or not req.subject_id.strip():
             reasons.append("subject_id_missing")
-        if req.budget <= self.MIN_BUDGET:
+        if not isinstance(req.budget, (int, float)) or isinstance(req.budget, bool) or req.budget <= 0:
             reasons.append("budget_non_positive")
-        # Scaffold: treat missing grant as soft signal only; real impl may hard-refuse.
         if reasons:
-            body = {
-                "subject_id": req.subject_id,
-                "payload": req.payload,
-                "budget": req.budget,
-                "decision": Decision.REFUSE.value,
-                "reasons": reasons,
-            }
-            return RackToTokenAutopilotReceipt(
-                decision=Decision.REFUSE,
-                reasons=tuple(reasons),
-                digest=_digest(body),
-                metrics={"scaffold": True, "reason_count": len(reasons)},
-            )
+            body = {"subject_id": req.subject_id, "budget": req.budget, "reasons": reasons}
+            return RackToTokenAutopilotReceipt(Decision.REFUSE, tuple(reasons), _digest(body))
 
+        try:
+            rows = req.payload.get("racks")
+            if not isinstance(rows, list):
+                raise ValueError("racks_missing")
+            target = float(req.payload["target_tokens_per_second"])
+            envelope_raw = req.payload.get("envelope") or {}
+            if not isinstance(envelope_raw, dict):
+                raise ValueError("envelope_must_be_object")
+            controller = FleetController(OperatingEnvelope(**envelope_raw))
+            allocation = controller.allocate_fleet([RackTelemetry(**row) for row in rows], target)
+        except (KeyError, TypeError, ValueError) as exc:
+            reason = f"invalid_request:{exc}"
+            body = {"subject_id": req.subject_id, "reason": reason}
+            return RackToTokenAutopilotReceipt(Decision.REFUSE, (reason,), _digest(body))
+
+        decision = Decision.ALLOW if allocation.decision is FleetDecision.ALLOW else Decision.REFUSE
+        metrics = {
+            "subject_id": req.subject_id,
+            "compatibility_budget": float(req.budget),
+            "target_tokens_per_second": allocation.target_tokens_per_second,
+            "allocated_tokens_per_second": allocation.allocated_tokens_per_second,
+            "unmet_tokens_per_second": allocation.unmet_tokens_per_second,
+            "assignments": dict(allocation.assignments),
+            "rack_actions": {row.rack_id: row.action.value for row in allocation.rack_decisions},
+            "controller_digest": allocation.digest,
+        }
         body = {
             "subject_id": req.subject_id,
-            "payload": req.payload,
-            "budget": req.budget,
+            "budget": float(req.budget),
             "grant_id": req.grant_id,
-            "decision": Decision.ALLOW.value,
+            "decision": decision.value,
+            "allocation_digest": allocation.digest,
+            "reasons": allocation.reasons,
         }
         return RackToTokenAutopilotReceipt(
-            decision=Decision.ALLOW,
-            reasons=("scaffold_allow",),
+            decision=decision,
+            reasons=allocation.reasons,
             digest=_digest(body),
-            metrics={
-                "scaffold": True,
-                "payload_keys": sorted(req.payload.keys()),
-                "budget": req.budget,
-            },
+            metrics=metrics,
         )
 
 
-# Friendly alias for operate scripts
 Mechanism = RackToTokenAutopilot

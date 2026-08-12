@@ -1,9 +1,29 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "crusoe-rack-to-token-autopilot"
-version = "0.0.1"
-description = "Scaffold: Rack-to-Token Autopilot (independent Crusoe lens)"
+version = "1.0.0"
+description = "Independent rack telemetry, safety-envelope, and useful-token allocation control reference"
+readme = "README.md"
 requires-python = ">=3.11"
 dependencies = []
+
+[project.scripts]
+rack-to-token = "rack_token_cli:main"
+rack-to-token-prometheus = "prometheus_rack_cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+py-modules = [
+  "rack_token_controller",
+  "autopilot_loop",
+  "prometheus_adapter",
+  "prometheus_rack_cli",
+  "rack_token_cli",
+  "rack_to_token_autopilot",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

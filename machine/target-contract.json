@@ -1,22 +1,22 @@
 {
-  "schema": "glaciereq.repo-target-contract.v1",
+  "schema": "glaciereq.repo-target-contract.v2",
   "identity": {
     "repository_id": "GlacierEQ/crusoe-rack-to-token-autopilot",
-    "family": "elite-estate"
+    "purpose": "convert rack telemetry into bounded useful-token allocation decisions under explicit infrastructure envelopes"
   },
   "current": {
-    "state": "PROMOTED",
+    "state": "FUNCTIONAL_CRYSTALLIZATION_CANDIDATE",
     "implemented": true,
-    "tested": true,
-    "deployed": false
+    "tested_parent_head": true,
+    "terminal_current_head_verified": false,
+    "deployed": false,
+    "naturally_deployable": false
   },
+  "completion_rule": "CRYSTALLIZED only after the canonicalized exact head passes package, behavior, Prometheus, state-loop, compatibility, manifest, and runtime gates and receives a source-bound completion receipt",
   "nonclaims": [
-    "no employer affiliation",
-    "no production deployment without receipt"
-  ],
-  "donor_plan": {
-    "mode": "none",
-    "donors": []
-  },
-  "frozen_at": "2026-08-10T10:10Z"
+    "no Crusoe affiliation or endorsement",
+    "no proprietary infrastructure or telemetry access",
+    "no production deployment or physical control authority",
+    "no production fleet safety, customer-impact, scale, latency, or reliability claim"
+  ]
 }

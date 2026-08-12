@@ -1,50 +1,59 @@
 # Rack-to-Token Autopilot
 
-Independent GlacierEQ portfolio exhibit aligned to **Crusoe** operating themes.
+An independent, local-first rack control reference that converts rack telemetry into **bounded useful-token allocation decisions** under explicit thermal, coolant, power, network, health, and reserve-capacity envelopes.
 
-> **Not affiliated.** This repository is not affiliated with, endorsed by, employed by, or deployed at Crusoe.
-> No proprietary access, production deployment, customer impact, or company partnership is claimed.
+> **Independent portfolio project.** No Crusoe affiliation, endorsement, proprietary access, production deployment, customer impact, or company-internal performance claim is made.
 
-## Bottleneck (GlacierEQ hypothesis)
+## What works
 
-co-optimizing rack-to-model performance as inference becomes a major workload and energy/network constraints shape economics
+The repository now has one real operating center:
 
-**Brick wall:** Silent success without receipts; affiliation or production claims without evidence.
+- `src/rack_token_controller.py` validates rack telemetry, evaluates per-rack safety, estimates safe token capacity, and allocates a fleet target without consuming unsafe capacity.
+- `src/autopilot_loop.py` adds stateful confirmation hysteresis, cooldown, emergency override, allocation materiality, and deterministic state persistence.
+- `src/prometheus_adapter.py` maps open Prometheus text exposition into the rack telemetry contract with fail-closed completeness and ambiguity checks.
+- `src/prometheus_rack_cli.py` performs a bounded HTTP scrape and runs the allocator against the observed metrics.
+- `src/rack_token_cli.py` runs the same controller against a JSON fleet snapshot.
+- `src/rack_to_token_autopilot.py` is a compatibility facade over the real controller. It no longer contains a scaffold mechanism.
 
-**Observed public pressure (snapshot hypothesis):** Public market pressure toward AI-enabled products and operators (hypothesis only).
+The optimization target is not GPU utilization by itself. The controller allocates requested useful-token throughput only from racks that remain inside the configured operating envelope, ranking eligible capacity by observed token efficiency.
 
-## Innovation mechanism
+## Install and run
 
-**Rack-to-Token Autopilot** — Close the loop from model latency/throughput back through GPU placement, network topology, power caps, thermals, and batching to maximize successful tokens/tasks per constrained rack.
+```bash
+python -m pip install .
+rack-to-token examples/rack_fleet.json
+```
 
-## Target roles
+The example emits a deterministic JSON receipt. An impossible fleet target or unsafe fleet returns `REFUSE` rather than pretending the requested throughput was achieved.
 
-- Applied AI Systems Engineer
-- Forward-Deployed Engineer
+For a Prometheus source:
 
-## Application move
+```bash
+rack-to-token-prometheus http://127.0.0.1:9090/metrics \
+  --target-tokens-per-second 12000
+```
 
-Lead with a small, inspectable Rack-to-Token Autopilot exhibit and explicit non-affiliation boundary.
+Bearer authentication, when needed, is read only from an explicitly named environment variable via `--bearer-token-env`; token values are not written into receipts.
 
-## Current scaffold state
+## Control semantics
 
-This leaf is a **scaffold**: contracts, tests, and a stub mechanism exist so another engineer/AI can fill production-grade code without inventing company affiliation.
+A rack can be held, scaled up/down, drained, or throttled for thermal, power, or network reasons. New work is excluded when rack health, readiness, thermal, power, network, or error-rate boundaries fail. Fleet allocation refuses when safe aggregate capacity cannot satisfy the requested token target.
 
-| Surface | Path |
-|---------|------|
-| Mechanism stub | `src/rack_to_token_autopilot.py` |
-| Operate entry | `scripts/operate.py` |
-| Contract tests | `tests/` |
-| Target contract | `machine/target-contract.json` |
-| **AI fill-in brief** | **`DEV_UP_INSTRUCTIONS.md`** |
-| Issue contract | `ISSUE_CONTRACT.md` |
+The stateful loop prevents noisy telemetry from turning into action thrash: ordinary changes require confirmation, cooldown suppresses rapid reversals, materiality suppresses meaningless allocation churn, and emergency actions bypass those delays.
 
-## Non-claims
+## Evidence
 
-- No Crusoe employment, endorsement, proprietary data, or production use
-- No customer, revenue, latency, or scale claims without separate receipts
-- Scaffold tests define **intended behavior**, not verified production excellence
+Repository-owned CI exercises:
 
-## Next gate
+- rack and fleet behavioral/refusal tests;
+- stateful hysteresis, cooldown, emergency, persistence, and reallocation tests;
+- Prometheus parsing failures and a real local HTTP scrape path;
+- package build/install and installed CLI execution;
+- compatibility-facade behavior;
+- machine crystallization manifests and empty-gap consistency.
 
-CURRENT_SOURCE_VALIDATION
+`machine/crystallization/` is the machine-readable purpose/capability/proof surface. A terminal `CRYSTALLIZED` receipt is issued only after the exact canonicalized head passes those gates.
+
+## Evidence boundary
+
+This is a reference control system over caller-supplied or operator-authorized telemetry. It does **not** establish production fleet safety, production workload authority, physical hardware control, real Crusoe deployment, proprietary telemetry, measured customer benefit, or production-scale reliability. Those claims would require separate environment-specific authority and receipts.

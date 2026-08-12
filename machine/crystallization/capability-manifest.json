@@ -1,105 +1,15 @@
 {
-  "schema": "glaciereq.crystallization-capabilities.v1",
+  "schema": "glaciereq.crystallization-capabilities.v2",
   "capabilities": [
-    {
-      "id": "rack_telemetry_contract",
-      "class": "data_processing",
-      "description": "Validate rack-level GPU readiness/utilization, temperature, coolant, power, network, error-rate, queue, and useful token telemetry with fail-closed numeric/domain constraints.",
-      "material": true,
-      "state": "WORKING",
-      "implementation_paths": ["src/rack_token_controller.py"],
-      "verification": ["tests/test_rack_token_controller.py"],
-      "consumer": "rack operating controller"
-    },
-    {
-      "id": "operating_envelope_controller",
-      "class": "core_domain_logic",
-      "description": "Turn telemetry into distinct HOLD/SCALE/DRAIN/THERMAL/POWER/NETWORK actions under explicit infrastructure envelopes.",
-      "material": true,
-      "state": "WORKING",
-      "implementation_paths": ["src/rack_token_controller.py"],
-      "verification": ["tests/test_rack_token_controller.py"],
-      "consumer": "infrastructure control loop"
-    },
-    {
-      "id": "safe_token_capacity_estimation",
-      "class": "analytics",
-      "description": "Estimate safe additional useful-token capacity from readiness, utilization, power headroom, thermal headroom, and reserve policy rather than GPU utilization alone.",
-      "material": true,
-      "state": "WORKING",
-      "implementation_paths": ["src/rack_token_controller.py"],
-      "verification": ["tests/test_rack_token_controller.py"],
-      "consumer": "fleet allocator"
-    },
-    {
-      "id": "fleet_token_allocator",
-      "class": "schedulers",
-      "description": "Rank safe racks by useful tokens per kW, allocate a requested token rate without using unsafe capacity, and refuse impossible targets with explicit unmet demand.",
-      "material": true,
-      "state": "WORKING",
-      "implementation_paths": ["src/rack_token_controller.py"],
-      "verification": ["tests/test_rack_token_controller.py"],
-      "consumer": "capacity scheduler"
-    },
-    {
-      "id": "stateful_autopilot_loop",
-      "class": "event_processing",
-      "description": "Apply repeated telemetry safely with emergency override, confirmation hysteresis, cooldown, materiality thresholds, stable allocation state, and deterministic serialized control memory.",
-      "material": true,
-      "state": "WORKING",
-      "implementation_paths": ["src/autopilot_loop.py"],
-      "verification": ["tests/test_autopilot_loop.py", ".github/workflows/control-loop.yml"],
-      "consumer": "continuous rack control loop"
-    },
-    {
-      "id": "executable_fleet_cli",
-      "class": "CLIs",
-      "description": "Run one complete rack-fleet allocation from JSON telemetry/envelope input and emit a machine-readable allow/refuse receipt.",
-      "material": true,
-      "state": "WORKING",
-      "implementation_paths": ["src/rack_token_cli.py", "examples/rack_fleet.json"],
-      "verification": [".github/workflows/crystallization.yml"],
-      "consumer": "operator, simulator, and CI"
-    },
-    {
-      "id": "canonical_mechanism_integration",
-      "class": "architecture",
-      "description": "Replace or redirect the historical scaffold entrypoint so the repository has one authoritative mechanism surface instead of a working controller beside a dead scaffold.",
-      "material": true,
-      "state": "PARTIAL",
-      "implementation_paths": ["src/rack_token_controller.py", "src/rack_to_token_autopilot.py"],
-      "verification": [],
-      "consumer": "all repository callers"
-    },
-    {
-      "id": "package_installation",
-      "class": "packaging",
-      "description": "Install the real controller/loop/CLI as the repository package without scaffold metadata or relying on PYTHONPATH-only execution.",
-      "material": true,
-      "state": "PARTIAL",
-      "implementation_paths": ["pyproject.toml"],
-      "verification": [],
-      "consumer": "developer and CI"
-    },
-    {
-      "id": "truthful_primary_documentation",
-      "class": "developer_experience",
-      "description": "Make README and implementation instructions describe the working controller and its actual non-affiliation/reference boundaries rather than a scaffold state.",
-      "material": true,
-      "state": "PARTIAL",
-      "implementation_paths": ["README.md", "DEV_UP_INSTRUCTIONS.md"],
-      "verification": [],
-      "consumer": "human reviewer"
-    },
-    {
-      "id": "external_telemetry_adapter",
-      "class": "integrations",
-      "description": "Translate a real open telemetry surface such as Prometheus/OpenTelemetry measurements into the rack telemetry contract without proprietary Crusoe APIs.",
-      "material": true,
-      "state": "MISSING",
-      "implementation_paths": [],
-      "verification": [],
-      "consumer": "continuous rack control loop"
-    }
+    {"id":"rack_telemetry_contract","state":"WORKING","implementation_paths":["src/rack_token_controller.py"],"verification":["tests/test_rack_token_controller.py"]},
+    {"id":"operating_envelope_controller","state":"WORKING","implementation_paths":["src/rack_token_controller.py"],"verification":["tests/test_rack_token_controller.py"]},
+    {"id":"safe_token_capacity_estimation","state":"WORKING","implementation_paths":["src/rack_token_controller.py"],"verification":["tests/test_rack_token_controller.py"]},
+    {"id":"fleet_token_allocator","state":"WORKING","implementation_paths":["src/rack_token_controller.py"],"verification":["tests/test_rack_token_controller.py"]},
+    {"id":"stateful_autopilot_loop","state":"WORKING","implementation_paths":["src/autopilot_loop.py"],"verification":["tests/test_autopilot_loop.py"]},
+    {"id":"executable_fleet_cli","state":"WORKING","implementation_paths":["src/rack_token_cli.py","examples/rack_fleet.json"],"verification":[".github/workflows/crystallization.yml"]},
+    {"id":"canonical_mechanism_integration","state":"WORKING","implementation_paths":["src/rack_token_controller.py","src/rack_to_token_autopilot.py"],"verification":["tests/test_rack_to_token_autopilot.py"]},
+    {"id":"package_installation","state":"WORKING","implementation_paths":["pyproject.toml"],"verification":[".github/workflows/crystallization.yml"]},
+    {"id":"truthful_primary_documentation","state":"WORKING","implementation_paths":["README.md","machine/capabilities.json"],"verification":[".github/workflows/crystallization.yml"]},
+    {"id":"external_telemetry_adapter","state":"WORKING","implementation_paths":["src/prometheus_adapter.py","src/prometheus_rack_cli.py"],"verification":["tests/test_prometheus_adapter.py",".github/workflows/prometheus-integration.yml"]}
   ]
 }
