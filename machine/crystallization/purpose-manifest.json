@@ -1,0 +1,30 @@
+{
+  "schema": "glaciereq.crystallization-purpose.v1",
+  "canonical_identity": "GlacierEQ/crusoe-rack-to-token-autopilot",
+  "purpose": "Convert rack-level infrastructure telemetry into safe operating and workload-placement decisions that maximize useful token throughput within explicit power, thermal, cooling, network, and hardware-health envelopes.",
+  "problem": "GPU utilization alone does not tell an AI infrastructure operator whether a rack is producing useful model throughput safely or efficiently. Thermal, coolant, power, network, hardware readiness, error rate, queue demand, and measured tokens per second must be considered together before adding or removing work.",
+  "intended_outcome": "Given current rack telemetry and a target useful-token rate, the software identifies unsafe racks, recommends bounded rack actions, estimates safe token capacity, ranks eligible racks by token efficiency, allocates demand without violating envelopes, and refuses targets that safe fleet capacity cannot satisfy.",
+  "consumers": [
+    "AI infrastructure operator",
+    "capacity scheduler",
+    "rack control loop",
+    "simulation/evaluation pipeline"
+  ],
+  "system_kind": "infrastructure_control_reference",
+  "naturally_deployable": false,
+  "lineage": {
+    "predecessors": [],
+    "successors": [],
+    "duplicates": [],
+    "canonical_successor": null
+  },
+  "evidence": [
+    "ISSUE_CONTRACT.md",
+    "README.md",
+    "DEV_UP_INSTRUCTIONS.md",
+    "src/rack_to_token_autopilot.py",
+    "tests/",
+    "machine/target-contract.json",
+    "git history"
+  ]
+}
