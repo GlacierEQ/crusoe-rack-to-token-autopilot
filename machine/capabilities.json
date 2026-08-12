@@ -1,12 +1,19 @@
 {
-  "schema": "glaciereq.repo-capabilities.v1",
+  "schema": "glaciereq.repo-capabilities.v3",
   "repository": "GlacierEQ/crusoe-rack-to-token-autopilot",
+  "status": "FUNCTIONAL_RECONCILIATION_CANDIDATE",
   "capabilities": [
-    {
-      "id": "rack-to-token-autopilot",
-      "name": "Rack-to-Token Autopilot",
-      "status": "SCAFFOLD",
-      "module": "src/rack_to_token_autopilot.py"
-    }
-  ]
+    "rack-constrained inference-plan optimization",
+    "GPU/power/thermal/network/workload SLO refusal semantics",
+    "successful-tokens-per-kW deterministic ranking",
+    "validated per-rack telemetry contract",
+    "safe useful-token capacity estimation",
+    "fleet useful-token allocation with explicit refusal",
+    "stateful hysteresis/cooldown/emergency control loop",
+    "deterministic state and decision receipts",
+    "bounded Prometheus HTTP telemetry adapter",
+    "installable plan, fleet, and Prometheus CLIs",
+    "combined direct operability probe"
+  ],
+  "terminal_status_requires": "exact-head verification after canonical reconciliation plus a new source-bound completion receipt"
 }

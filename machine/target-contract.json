@@ -1,22 +1,21 @@
 {
-  "schema": "glaciereq.repo-target-contract.v1",
+  "schema": "glaciereq.repo-target-contract.v3",
   "identity": {
     "repository_id": "GlacierEQ/crusoe-rack-to-token-autopilot",
-    "family": "elite-estate"
+    "purpose": "rack-constrained inference optimization plus telemetry-driven useful-token allocation"
   },
   "current": {
-    "state": "PROMOTED",
+    "state": "FUNCTIONAL_RECONCILIATION_CANDIDATE",
     "implemented": true,
-    "tested": true,
-    "deployed": false
+    "terminal_current_head_verified": false,
+    "deployed": false,
+    "naturally_deployable": false
   },
+  "completion_rule": "CRYSTALLIZED only after both the plan-optimizer and telemetry-allocation layers build, install, execute, pass behavioral/adversarial/integration tests, preserve an empty material gap matrix, and receive a source-bound receipt on the reconciled canonical lineage.",
   "nonclaims": [
-    "no employer affiliation",
-    "no production deployment without receipt"
-  ],
-  "donor_plan": {
-    "mode": "none",
-    "donors": []
-  },
-  "frozen_at": "2026-08-10T10:10Z"
+    "no Crusoe affiliation or endorsement",
+    "no proprietary infrastructure or telemetry access",
+    "no production deployment or physical-control authority",
+    "no production fleet safety, customer benefit, scale, latency, or reliability claim"
+  ]
 }

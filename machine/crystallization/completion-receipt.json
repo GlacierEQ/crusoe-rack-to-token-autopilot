@@ -1,0 +1,67 @@
+{
+  "schema": "glaciereq.crystallization-completion-receipt.v2",
+  "repository": "GlacierEQ/crusoe-rack-to-token-autopilot",
+  "status": "CRYSTALLIZED",
+  "verified_source_head": "8fecc1748192b4401ae730c0092674ae6eeff328",
+  "canonical_purpose": "Optimize inference against hard rack/workload constraints and allocate useful-token demand across safe observed rack capacity.",
+  "architecture": {
+    "plan_optimizer": "src/rack_to_token_autopilot.py",
+    "telemetry_allocator": "src/rack_token_controller.py",
+    "stateful_control_loop": "src/autopilot_loop.py",
+    "prometheus_adapter": "src/prometheus_adapter.py",
+    "combined_operability": "scripts/operate.py"
+  },
+  "capabilities": {
+    "material_count": 10,
+    "implemented_count": 10,
+    "verified_count": 10,
+    "remaining_gap_count": 0
+  },
+  "proof": {
+    "crystallization": {
+      "workflow_run_id": 31643026001,
+      "conclusion": "success",
+      "proved": [
+        "complete behavioral and adversarial suite",
+        "wheel build and install",
+        "installed plan-optimizer CLI",
+        "installed fleet-allocation CLI",
+        "combined direct operability",
+        "all crystallization capabilities WORKING",
+        "empty material gap matrix"
+      ]
+    },
+    "repository_tests": {
+      "workflow_run_id": 31643026004,
+      "conclusion": "success"
+    },
+    "prometheus_integration": {
+      "workflow_run_id": 31643026054,
+      "conclusion": "success"
+    },
+    "stateful_control_loop": {
+      "workflow_run_id": 31643026009,
+      "conclusion": "success"
+    }
+  },
+  "build": "PASS",
+  "tests": "PASS",
+  "runtime": "PASS",
+  "integration": "PASS",
+  "deployment": {
+    "status": "NOT_APPLICABLE",
+    "reason": "This repository is complete as local/reference rack-inference control software. Production attachment to a real rack or workload authority requires a separate environment-specific integration and cannot be inferred from local completion."
+  },
+  "lineage": {
+    "canonical_main_parent": "f14f7a2cde849cad42078251cd5c374e97954fc1",
+    "telemetry_lineage_parent": "56731a1419e24e1ff84d98a65cc574076777f5f2",
+    "reconciliation_rule": "Preserve the canonical plan optimizer and the independently verified telemetry allocator as complementary layers rather than overwriting either implementation."
+  },
+  "truth_boundary": [
+    "No Crusoe affiliation or endorsement is established.",
+    "No proprietary infrastructure or telemetry access is established.",
+    "No production deployment or physical-control authority is established.",
+    "No production fleet safety, customer benefit, scale, latency, or reliability claim is established."
+  ],
+  "receipt_head_rule": "This receipt is terminal only if the commit carrying it passes the same exact-head repository verification matrix and remains fresh against canonical main immediately before merge."
+}

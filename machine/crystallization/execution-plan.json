@@ -1,0 +1,11 @@
+{
+  "naturally_deployable": false,
+  "test_commands": [["python", "-m", "pytest", "-q"]],
+  "build_commands": [["python", "-m", "pip", "wheel", ".", "--no-deps", "-w", "dist"]],
+  "runtime_commands": [
+    ["rack-to-token-autopilot"],
+    ["rack-to-token", "examples/rack_fleet.json"],
+    ["python", "scripts/operate.py"]
+  ],
+  "deployment_reason": "Local/reference rack control software; real production attachment requires separate environment authority and evidence."
+}
