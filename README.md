@@ -1,50 +1,66 @@
 # Rack-to-Token Autopilot
 
-Independent GlacierEQ portfolio exhibit aligned to **Crusoe** operating themes.
+Independent GlacierEQ portfolio implementation aligned to **Crusoe** operating themes.
 
-> **Not affiliated.** This repository is not affiliated with, endorsed by, employed by, or deployed at Crusoe.
-> No proprietary access, production deployment, customer impact, or company partnership is claimed.
+> **Not affiliated.** This repository is not affiliated with, endorsed by, employed by, or deployed at Crusoe. No proprietary access, production deployment, customer impact, or company partnership is claimed.
 
-## Bottleneck (GlacierEQ hypothesis)
+## Purpose
 
-co-optimizing rack-to-model performance as inference becomes a major workload and energy/network constraints shape economics
+Optimize inference at the **rack constraint boundary**, not at an isolated model benchmark. Candidate execution plans are evaluated against GPU capacity, rack power, thermals, network capacity, throughput, p95 latency, and successful-request rate.
 
-**Brick wall:** Silent success without receipts; affiliation or production claims without evidence.
+The selected plan maximizes **successful tokens per rack-kW** while satisfying every hard infrastructure and workload SLO. A faster plan that overheats the rack, overruns network capacity, misses latency, or burns too much power is rejected instead of being celebrated by a vanity benchmark.
 
-**Observed public pressure (snapshot hypothesis):** Public market pressure toward AI-enabled products and operators (hypothesis only).
+## Implemented mechanism
 
-## Innovation mechanism
+`RackToTokenAutopilot` accepts:
 
-**Rack-to-Token Autopilot** — Close the loop from model latency/throughput back through GPU placement, network topology, power caps, thermals, and batching to maximize successful tokens/tasks per constrained rack.
+- rack envelope: GPU count, power limit, thermal ceiling, network capacity;
+- workload contract: minimum tokens/s, maximum p95 latency, minimum success rate;
+- measured candidate plans: placement/batch configuration plus power, thermal, network, throughput, latency, and success observations.
 
-## Target roles
+For every candidate it emits explicit refusal reasons such as:
 
-- Applied AI Systems Engineer
-- Forward-Deployed Engineer
+- `gpu_capacity_exceeded`
+- `power_limit_exceeded`
+- `thermal_limit_exceeded`
+- `network_capacity_exceeded`
+- `throughput_slo_missed`
+- `latency_slo_missed`
+- `success_rate_slo_missed`
 
-## Application move
+Eligible plans are ranked deterministically by successful tokens/kW, then latency, power, and stable plan id. The receipt includes the selected plan, rejected-plan reasons, headroom metrics, and a SHA-256 decision digest.
 
-Lead with a small, inspectable Rack-to-Token Autopilot exhibit and explicit non-affiliation boundary.
+## Run
 
-## Current scaffold state
+```bash
+python -m pytest -q
+python scripts/operate.py
+```
 
-This leaf is a **scaffold**: contracts, tests, and a stub mechanism exist so another engineer/AI can fill production-grade code without inventing company affiliation.
+Build and install the CLI:
 
-| Surface | Path |
-|---------|------|
-| Mechanism stub | `src/rack_to_token_autopilot.py` |
-| Operate entry | `scripts/operate.py` |
-| Contract tests | `tests/` |
-| Target contract | `machine/target-contract.json` |
-| **AI fill-in brief** | **`DEV_UP_INSTRUCTIONS.md`** |
-| Issue contract | `ISSUE_CONTRACT.md` |
+```bash
+python -m pip install build
+python -m build
+python -m pip install dist/*.whl
+rack-to-token-autopilot
+```
 
-## Non-claims
+Provide your own JSON payload:
 
-- No Crusoe employment, endorsement, proprietary data, or production use
-- No customer, revenue, latency, or scale claims without separate receipts
-- Scaffold tests define **intended behavior**, not verified production excellence
+```bash
+rack-to-token-autopilot --input rack-observations.json
+```
 
-## Next gate
+## Proof surface
 
-CURRENT_SOURCE_VALIDATION
+- `src/rack_to_token_autopilot.py` — constrained optimizer
+- `src/rack_to_token_cli.py` — installable execution surface
+- `tests/test_rack_to_token_autopilot.py` — rack/SLO/thermal/power/network/tie-break behavior
+- `tests/test_adversarial.py` — fail-closed adversarial surface
+- `.github/workflows/tests.yml` — tests + cold-start + wheel build/install + installed CLI execution
+- `machine/` — existing Helix target, proof, authority, and promotion surfaces remain preserved
+
+## Current boundary
+
+This operates on supplied or measured observations; it does not control real Crusoe infrastructure and does not claim production measurements. The next infrastructure depth step is an adapter that ingests telemetry from a disposable GPU/rack simulator or permitted test cluster and closes the loop across repeated observations.
