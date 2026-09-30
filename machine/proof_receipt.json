@@ -4,12 +4,12 @@
   "source_sha": "603d629438aead66a92024228449742129e62a6457a039fa2c35042f35b85b2f",
   "proof_id": "elite-crusoe-rack-to-token-autopilot-1786356650",
   "environment": {
-    "python": "/Users/kcbflux/.local/bin/python3.11",
-    "PYTHONPATH": "/Users/kcbflux/GlacierEQ_Swarm/job-app/repos/crusoe-rack-to-token-autopilot:/Users/kcbflux/GlacierEQ_Swarm/job-app/repos/crusoe-rack-to-token-autopilot/src",
+    "python": "${HOME}/.local/bin/python3.11",
+    "PYTHONPATH": "${HOME}/GlacierEQ_Swarm/job-app/repos/crusoe-rack-to-token-autopilot:${HOME}/GlacierEQ_Swarm/job-app/repos/crusoe-rack-to-token-autopilot/src",
     "entry": "unittest"
   },
   "tests": [
-    "/Users/kcbflux/.local/bin/python3.11 -m unittest discover -s tests -v (x2)"
+    "${HOME}/.local/bin/python3.11 -m unittest discover -s tests -v (x2)"
   ],
   "adversarial_tests": [
     "tests/test_adversarial.py"
